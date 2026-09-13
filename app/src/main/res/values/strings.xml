@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">ইলিশের বাড়ি রেস্টুরেন্ট</string>
+    <string name="restaurant_tagline">চাঁদপুরের তাজা পদ্মা-মেঘনার খাঁটি ইলিশের স্বাদ</string>
+    <string name="menu_title">রেস্টুরেন্ট মেনু</string>
+    <string name="cart_title">আপনার কার্ট</string>
+    <string name="orders_title">অর্ডার হিস্ট্রি</string>
+    <string name="search_hint">মেনু বা খাবার খুঁজুন...</string>
+    <string name="order_now">অর্ডার করুন</string>
+    <string name="add_to_cart">কার্টে যোগ করুন</string>
+    <string name="view_cart">কার্ট দেখুন</string>
+</resources>

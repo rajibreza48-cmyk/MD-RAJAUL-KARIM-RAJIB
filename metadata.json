@@ -1,0 +1,6 @@
+{
+  "name": "ইলিশের বাড়ি রেস্টুরেন্ট",
+  "description": "ইলিশের বাড়ি রেস্টুরেন্টের খাঁটি ইলিশ ও সুস্বাদু খাবারের মেনু দেখা ও সরাসরি অর্ডার করার অ্যাপ",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
