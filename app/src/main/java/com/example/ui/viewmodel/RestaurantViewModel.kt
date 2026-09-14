@@ -28,7 +28,8 @@ enum class AppScreen {
     MENU,
     CART,
     ORDERS,
-    TRACKING
+    TRACKING,
+    ADMIN
 }
 
 enum class DietaryFilter(val labelBn: String) {
@@ -114,14 +115,18 @@ class RestaurantViewModel(application: Application) : AndroidViewModel(applicati
     private val _orderSuccessSnackbar = MutableStateFlow<String?>(null)
     val orderSuccessSnackbar: StateFlow<String?> = _orderSuccessSnackbar.asStateFlow()
 
+    private val _allMenuItems = MutableStateFlow(SampleMenuData.items)
+    val allMenuItems: StateFlow<List<MenuItem>> = _allMenuItems.asStateFlow()
+
     // Filtered menu items
     val filteredMenuItems: StateFlow<List<MenuItem>> = combine(
+        _allMenuItems,
         _searchQuery,
         _selectedCategory,
         _selectedDietFilter
-    ) { query, category, dietFilter ->
+    ) { allItems, query, category, dietFilter ->
         val q = query.trim().lowercase(Locale.ROOT)
-        SampleMenuData.items.filter { item ->
+        allItems.filter { item ->
             val matchesCategory = category == MenuCategory.ALL || item.category == category
             val matchesQuery = q.isEmpty() ||
                     item.nameBn.lowercase().contains(q) ||
@@ -377,5 +382,26 @@ class RestaurantViewModel(application: Application) : AndroidViewModel(applicati
 
     fun dismissSnackbar() {
         _orderSuccessSnackbar.value = null
+    }
+
+    fun updateMenuItem(updatedItem: MenuItem) {
+        val currentList = _allMenuItems.value.toMutableList()
+        val index = currentList.indexOfFirst { it.id == updatedItem.id }
+        if (index >= 0) {
+            currentList[index] = updatedItem
+            _allMenuItems.value = currentList
+            // Update cart items if they contain this item to reflect new price
+            val currentCart = _cartItems.value.toMutableList()
+            var cartUpdated = false
+            for (i in currentCart.indices) {
+                if (currentCart[i].menuItem.id == updatedItem.id) {
+                    currentCart[i] = currentCart[i].copy(menuItem = updatedItem)
+                    cartUpdated = true
+                }
+            }
+            if (cartUpdated) {
+                _cartItems.value = currentCart
+            }
+        }
     }
 }

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.RestaurantMenu
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.RestaurantMenu
@@ -47,6 +48,7 @@ fun RestaurantApp(
     modifier: Modifier = Modifier
 ) {
     val currentScreen by viewModel.currentScreen.collectAsStateWithLifecycle()
+    val allMenuItems by viewModel.allMenuItems.collectAsStateWithLifecycle()
     val filteredMenuItems by viewModel.filteredMenuItems.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val selectedCategory by viewModel.selectedCategory.collectAsStateWithLifecycle()
@@ -155,6 +157,25 @@ fun RestaurantApp(
                     ),
                     modifier = Modifier.testTag("nav_orders_tab")
                 )
+
+                // Admin tab
+                NavigationBarItem(
+                    selected = currentScreen == AppScreen.ADMIN,
+                    onClick = { viewModel.navigateTo(AppScreen.ADMIN) },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Filled.Settings,
+                            contentDescription = "অ্যাডমিন",
+                            modifier = Modifier.size(22.dp)
+                        )
+                    },
+                    label = { Text("অ্যাডমিন", fontSize = 12.sp) },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = WarmAmberPrimary,
+                        selectedTextColor = WarmAmberPrimary
+                    ),
+                    modifier = Modifier.testTag("nav_admin_tab")
+                )
             }
         }
     ) { innerPadding ->
@@ -227,6 +248,12 @@ fun RestaurantApp(
                             onBackToMenu = { viewModel.navigateTo(AppScreen.MENU) },
                             onTrackOrder = { order -> viewModel.viewTrackingOrder(order) },
                             onReorder = { order -> viewModel.reorder(order) }
+                        )
+                    }
+                    AppScreen.ADMIN -> {
+                        com.example.ui.screens.AdminScreen(
+                            menuItems = allMenuItems,
+                            onUpdateItem = viewModel::updateMenuItem
                         )
                     }
                 }
