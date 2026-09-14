@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.LocalFireDepartment
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material3.Button
@@ -207,23 +208,46 @@ fun MenuItemCard(
                         )
                     }
 
-                    // Rating
+                    // Share and Rating
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
                         modifier = Modifier.padding(start = 6.dp)
                     ) {
-                        Icon(
-                            imageVector = Icons.Filled.Star,
-                            contentDescription = "Rating",
-                            tint = GoldenAccent,
-                            modifier = Modifier.size(14.dp)
-                        )
-                        Spacer(modifier = Modifier.width(2.dp))
-                        Text(
-                            text = item.rating.toString(),
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 13.sp
-                        )
+                        val context = androidx.compose.ui.platform.LocalContext.current
+                        androidx.compose.material3.IconButton(
+                            onClick = {
+                                val sendIntent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
+                                    putExtra(android.content.Intent.EXTRA_TEXT, "দারুণ স্বাদের ${item.nameBn} মাত্র ৳${item.price.toInt()} তে! আসুন ইলিশের বাড়ি রেস্টুরেন্টে।")
+                                    type = "text/plain"
+                                }
+                                val shareIntent = android.content.Intent.createChooser(sendIntent, "Share dish via")
+                                context.startActivity(shareIntent)
+                            },
+                            modifier = Modifier.size(24.dp).testTag("share_item_${item.id}")
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Share,
+                                contentDescription = "Share",
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
+
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Filled.Star,
+                                contentDescription = "Rating",
+                                tint = GoldenAccent,
+                                modifier = Modifier.size(14.dp)
+                            )
+                            Spacer(modifier = Modifier.width(2.dp))
+                            Text(
+                                text = item.rating.toString(),
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 13.sp
+                            )
+                        }
                     }
                 }
 

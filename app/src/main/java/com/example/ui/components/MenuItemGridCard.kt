@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -117,28 +118,58 @@ fun MenuItemGridCard(
                         Spacer(modifier = Modifier.width(1.dp))
                     }
 
-                    // Rating pill
-                    Surface(
-                        shape = CircleShape,
-                        color = Color.Black.copy(alpha = 0.65f),
-                        contentColor = Color.White
+                    // Rating pill and Share
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                        val context = LocalContext.current
+                        Surface(
+                            shape = CircleShape,
+                            color = Color.Black.copy(alpha = 0.65f),
+                            contentColor = Color.White,
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .clickable {
+                                    val sendIntent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
+                                        putExtra(android.content.Intent.EXTRA_TEXT, "দারুণ স্বাদের ${item.name} মাত্র ৳${item.price.toInt()} তে! আসুন ইলিশের বাড়ি রেস্টুরেন্টে।")
+                                        type = "text/plain"
+                                    }
+                                    val shareIntent = android.content.Intent.createChooser(sendIntent, "Share dish via")
+                                    context.startActivity(shareIntent)
+                                }
+                                .testTag("share_item_${item.id}")
                         ) {
                             Icon(
-                                imageVector = Icons.Filled.Star,
-                                contentDescription = "Rating",
-                                tint = GoldenAccent,
-                                modifier = Modifier.size(11.dp)
+                                imageVector = Icons.Filled.Share,
+                                contentDescription = "Share",
+                                tint = Color.White,
+                                modifier = Modifier.padding(5.dp).size(11.dp)
                             )
-                            Spacer(modifier = Modifier.width(2.dp))
-                            Text(
-                                text = "${item.rating}",
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.Bold
-                            )
+                        }
+
+                        Surface(
+                            shape = CircleShape,
+                            color = Color.Black.copy(alpha = 0.65f),
+                            contentColor = Color.White
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Star,
+                                    contentDescription = "Rating",
+                                    tint = GoldenAccent,
+                                    modifier = Modifier.size(11.dp)
+                                )
+                                Spacer(modifier = Modifier.width(2.dp))
+                                Text(
+                                    text = "${item.rating}",
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
                         }
                     }
                 }
